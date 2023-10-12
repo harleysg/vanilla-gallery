@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --app-font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --app-text-color: rgba(255, 255, 255, 0.87);
@@ -6,6 +10,9 @@
   --app-background-color: #242424;
   --app-button-background-color: #1a1a1a;
   --app-button-border-color: #646cff;
+  --app-body-scroll-track-bg: hsl(0 0% 7%, 0.1);
+  --app-body-scroll-thumb-bg: hsl(0 0% 25%);
+  --app-body-scroll-thumb-bg-hover: hsl(0 0% 5%, 1);
 }
 
 html {
@@ -45,18 +52,26 @@ p {
   margin-block-start: 0;
 }
 
-button {
-  border-radius: 8px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--app-button-border-color);
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--app-button-background-color);
-  cursor: pointer;
-  transition: border-color 0.25s;
+dialog::backdrop {
+  --tw-backdrop-blur: blur(12px);
+}
+
+
+/* ---------- Scroll --------- */
+*::-webkit-scrollbar {
+  height: 0;
+  width: 5px;
+  background-color: rgba(0,0,0,0.5);
+}
+
+/* Track */
+*::-webkit-scrollbar-track {
+  background-color: var(--app-body-scroll-track-bg);
+}
+
+/* Handle */
+*::-webkit-scrollbar-thumb {
+  background: var(--app-body-scroll-thumb-bg);
 }
 
 @media (prefers-color-scheme: light) {
