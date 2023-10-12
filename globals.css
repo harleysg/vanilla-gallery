@@ -41,6 +41,10 @@ h1 {
   line-height: 1.1;
 }
 
+p {
+  margin-block-start: 0;
+}
+
 button {
   border-radius: 8px;
   border-width: 1px;
