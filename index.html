@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="icon" type="image/svg+xml" href="/javascript.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite App</title>
+  <title>Vanilla gallery</title>
 </head>
 
 <body class="bg-black">
@@ -14,7 +14,7 @@
       <div class="relative flex flex-col items-center justify-end gap-4 overflow-hidden rounded-lg row-span-3 sm:col-span-2 lg:col-span-1 lg:row-span-2 text-center pt-64 px-6 pb-16">
         <div class="absolute inset-0 flex items-center justify-center opacity-20">
           <span class="flex max-h-full max-w-full items-center justify-center text-white">
-            <svg class="w-full" aria-labelledby="conf-city-title" fill="none" role="img" viewBox="0 0 620 704" width="620" height="704" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-full" aria-hidden="true" aria-labelledby="conf-city-title" fill="none" role="img" viewBox="0 0 620 704" width="620" height="704" xmlns="http://www.w3.org/2000/svg">
               <title id="conf-city-title">Line drawing of the Golden Gate Bridge in San Francisco.</title>
               <path d="M372.5 299.5L616.5 335" stroke="currentColor" data-darkreader-inline-stroke=""
                 style="--darkreader-inline-stroke: currentColor;"></path>
@@ -166,22 +166,24 @@
       </figure>
     </section>
   </main>
-  <dialog id="dialog"
-    class="open:flex flex-col items-center fixed inset-0 z-30 bg-transparent backdrop:bg-black/70 backdrop:backdrop-filter h-full w-[90vw]">
-    <div class="flex flex-col w-full max-w-7xl items-center relative">
+  <dialog id="dialog" class="open:flex flex-col justify-center items-center fixed inset-0 z-30 bg-transparent backdrop:bg-black/70 backdrop:backdrop-filter h-full max-w-full w-full lg:w-[90vw]">
+    <div class="flex flex-col justify-center items-center overflow-hidden max-w-[123em] relative aspect-[3/2]">
       <div class="absolute top-0 left-0 flex items-center gap-2 p-3 text-white">
         <button data-action="close" class="rounded-full bg-black/50 p-2 text-white/75 backdrop-blur-lg transition hover:bg-black/75 hover:text-white">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class="h-5 w-5 pointer-events-none" data-darkreader-inline-stroke="" style="--darkreader-inline-stroke: currentColor;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
       </div>
-      <section class="shrink grow basis-full">
-        <figure class="aspect-[3/2] object-cover h-full overflow-hidden flex">
+      <section class="shrink grow basis-full items-center wide:h-full xl:taller-than-854:h-auto">
+        <figure class="aspect-[3/2] object-cover object-center h-full overflow-hidden flex">
           <img class="w-full h-full" alt="">
         </figure>
       </section>
-      <footer class="flex h-20 fixed bottom-0 gap-1"></footer>
+      <footer class="flex fixed inset-x-0 bottom-0 z-40 overflow-hidden bg-gradient-to-b from-black/0 to-black/60 gap-0">
+          <nav class="mx-auto mt-6 mb-6 flex aspect-[3/2] h-14 shrink-0"></nav>
+      </footer>
     </div>
   </dialog>
+  <img class="w-full h-full pointer-events-none hidden delay-75 transition-transform duration-300 px-1" alt="">
   <script type="module" src="/main.js"></script>
 </body>
 
