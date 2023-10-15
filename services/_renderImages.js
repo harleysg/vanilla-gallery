@@ -12,7 +12,10 @@ const defaultOptions = {
 export async function _renderImages (
   target, { props, getOuterHTML, error } = defaultOptions
 ) {
-  if (!target || !document.querySelector(target?.tagName)) {
+  if (
+    !target || !document.querySelector(target?.tagName) ||
+    !(target instanceof window.HTMLElement)
+  ) {
     throw new HTMLError('The target element is not defined', {
       origin: `renderImages <- ${error?.origin ?? ''}`
     })
