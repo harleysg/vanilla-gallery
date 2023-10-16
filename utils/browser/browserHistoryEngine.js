@@ -44,6 +44,10 @@ const BrowserHistory = {
       value: Number(_HASH) || 0,
       hash: _HASH
     }
+  },
+
+  replaceState: ({ path, data } = ISetLocation) => {
+    window.history.replaceState(data, document.title, path)
   }
 }
 
