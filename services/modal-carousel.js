@@ -4,14 +4,13 @@ import { HTMLError } from '../helpers/errors.js'
 
 export async function modalCarousel ({ dialog }) {
   if (
-    dialog ||
+    !dialog ||
     !(dialog instanceof window.HTMLElement) ||
     !document.querySelector(dialog?.tagName)
   ) {
     throw new HTMLError('Dialog is not defined', {
       origin: 'modalCarousel',
       callback: {
-        dialogMiniCarrousel: () => {},
         getImagesFromGallery: () => {},
         initCarousel: () => {}
       }
@@ -23,7 +22,6 @@ export async function modalCarousel ({ dialog }) {
   const transitionDuration = 300
   const $dialogNav = dialog.querySelector('footer nav')
   const $dialogImg = dialog.querySelector('figure img')
-  const $dialogCarouselImages = dialog.querySelectorAll('nav a')
 
   dialog.addEventListener('close', _dialogHandleCloseEvent)
   dialog.addEventListener('click', _dialogHandleClickEvent)
@@ -36,12 +34,14 @@ export async function modalCarousel ({ dialog }) {
     error: { origin: 'modalCarousel' }
   })
 
+  const $dialogCarouselAnchors = $dialogNav.querySelectorAll('nav a')
+
   function _dialogHandleCloseEvent () {
     const { hash } = BrowserHistory.getHashes()
+    const newURL = window.location.toString().substring(0, window.location.toString().indexOf('#'))
     prevImage = hash
     wasClicked = false
-    const URI = window.location.toString().substring(0, window.location.toString().indexOf('#'))
-    window.history.replaceState({}, document.title, URI)
+    BrowserHistory.replaceState({ data: {}, path: newURL })
   }
 
   function _dialogHandleClickEvent ({ target }) {
@@ -51,7 +51,7 @@ export async function modalCarousel ({ dialog }) {
 
     if ((target.nodeName === 'IMG' || target.nodeName === 'A') && target?.dataset?.position) {
       wasClicked = true
-      dialogMiniCarrousel(Number(target.dataset.position))
+      dialogMiniCarrousel({ position: Number(target.dataset.position) })
     }
   }
 
@@ -59,19 +59,19 @@ export async function modalCarousel ({ dialog }) {
     const { value: _HASH, hash } = BrowserHistory.getHashes()
 
     if (!isNaN(hash) && _HASH > -1) {
-      const target = $dialogNav?.[_HASH]
+      const anchor = $dialogCarouselAnchors?.[_HASH]
 
-      if (target) {
-        !wasClicked && dialogMiniCarrousel(_HASH)
-        getImagesFromGallery({ src: target.src })
+      if (anchor) {
+        !wasClicked && dialogMiniCarrousel({ position: _HASH })
+        getImagesFromGallery({ src: anchor.firstChild?.src || '' /** TODO: use a default image */ })
       }
     } else if (isNaN(hash) && dialog && dialog.open) {
       dialog.close()
     }
   }
 
-  function dialogMiniCarrousel (position) {
-    const carouselImages = [].slice.call($dialogCarouselImages)
+  function dialogMiniCarrousel ({ position }) {
+    const carouselImages = [].slice.call($dialogCarouselAnchors)
     const index = Number(position)
 
     carouselImages.forEach($item => {
@@ -91,7 +91,6 @@ export async function modalCarousel ({ dialog }) {
   }
 
   return Promise.resolve({
-    dialogMiniCarrousel,
     getImagesFromGallery,
     initCarousel
   })
