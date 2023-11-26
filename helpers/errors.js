@@ -22,9 +22,7 @@ const ErrorFactory = (name = 'ErrorFactory') => {
       this.response.callback = options?.callback
 
       try {
-      // TODO: Include a external reporter
-        const listOfErrors = await this.getReports(STORAGE.errorsReported)
-        store.setItem(STORAGE.errorsReported, JSON.stringify([...listOfErrors, this.response]))
+        await this.setReports(STORAGE.errorsReported)
       } catch (error) {
       // TODO
         console.warn({
@@ -36,7 +34,12 @@ const ErrorFactory = (name = 'ErrorFactory') => {
       return this.response
     }
 
-    getReports = getStoreByKey
+    async setReports () {
+      const listOfErrors = await getStoreByKey(STORAGE.errorsReported)
+      store.setItem(STORAGE.errorsReported, JSON.stringify([...listOfErrors, this.response]))
+      // TODO: Include a external reporter
+      // setExternalReport()
+    }
   }
 }
 
