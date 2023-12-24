@@ -1,6 +1,6 @@
 const ISetLocation = { path: '', data: {}, title: '' }
 
-const BrowserHistory = {
+export const BrowserHistory = {
   back: () => window.history.back(),
 
   forward: () => window.history.forward(),
@@ -50,5 +50,3 @@ const BrowserHistory = {
     window.history.replaceState(data, document.title, path)
   }
 }
-
-export { BrowserHistory }
