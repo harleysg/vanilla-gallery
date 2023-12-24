@@ -1,18 +1,32 @@
 import { HTMLError } from '../helpers/errors'
+import { HTMLValidator } from '../schema/html'
 import { _renderImages } from './_renderImages'
 
-export async function galleryService ({ gallery, option: { emitImageSelected } }) {
-  if (
-    !gallery ||
-    !(gallery instanceof window.HTMLElement) ||
-    !document.querySelector(gallery?.tagName)
-  ) {
-    throw new HTMLError('The target element is not defined', {
+const IParamsDefault = {
+  gallery: undefined,
+  option: {
+    emitImageSelected: () => {}
+  }
+}
+
+/**
+ * Add event and render images
+ * @param {IParamsDefault} { gallery, options }
+ */
+export async function galleryService ({ gallery, option } = IParamsDefault) {
+  const isHTML = await HTMLValidator(gallery)
+
+  if (isHTML.error) {
+    throw new HTMLError(isHTML.error.format()._errors[0], {
       origin: 'galleryService'
     })
   }
 
-  gallery.addEventListener('click', _galleryHandleEvent)
+  gallery.addEventListener('click', ({ target }) => {
+    if (target instanceof globalThis.HTMLImageElement) {
+      option.emitImageSelected({ src: target.src })
+    }
+  })
 
   await _renderImages(gallery, {
     props: {
@@ -20,10 +34,4 @@ export async function galleryService ({ gallery, option: { emitImageSelected } }
     },
     getOuterHTML: true
   })
-
-  function _galleryHandleEvent ({ target }) {
-    if (target.nodeName === 'IMG') {
-      emitImageSelected({ src: target.src })
-    }
-  }
 }

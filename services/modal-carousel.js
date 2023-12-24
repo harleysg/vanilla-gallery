@@ -1,13 +1,12 @@
 import { _renderImages } from './_renderImages.js'
 import { BrowserHistory } from '../utils/index.js'
 import { HTMLError } from '../helpers/errors.js'
+import { HTMLValidator } from '../schema/html.js'
 
 export async function modalCarousel ({ dialog }) {
-  if (
-    !dialog ||
-    !(dialog instanceof window.HTMLElement) ||
-    !document.querySelector(dialog?.tagName)
-  ) {
+  const isDialog = await HTMLValidator(dialog, globalThis.HTMLDialogElement)
+
+  if (isDialog.error) {
     throw new HTMLError('Dialog is not defined', {
       origin: 'modalCarousel',
       callback: {

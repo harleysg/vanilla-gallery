@@ -1,7 +1,7 @@
-import { IMAGES } from '../db/images.js'
 import { HTMLError } from '../helpers/errors.js'
-import { getImages } from '../utils/index.js'
-import html from './createHtml.js'
+import { html } from '../utils/dom/index.js'
+import { HTMLValidator } from '../schema/html.js'
+import { ImageController } from '../controller/index.js'
 
 const defaultOptions = {
   props: {},
@@ -12,18 +12,17 @@ const defaultOptions = {
 export async function _renderImages (
   target, { props, getOuterHTML, error } = defaultOptions
 ) {
-  if (
-    !target || !document.querySelector(target?.tagName) ||
-    !(target instanceof window.HTMLElement)
-  ) {
-    throw new HTMLError('The target element is not defined', {
+  const isHTML = await HTMLValidator(target)
+
+  if (isHTML.error) {
+    throw new HTMLError(isHTML.error.format()._errors[0], {
       origin: `renderImages <- ${error?.origin ?? ''}`
     })
   }
 
-  target.toggleAttribute('data-loading')
-  const data = await getImages(IMAGES)
+  const data = await ImageController.getAll()
   let tmplImage = ''
+  target.toggleAttribute('data-loading')
 
   if (data.length === 0) return
 
