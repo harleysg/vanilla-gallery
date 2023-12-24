@@ -1,4 +1,4 @@
-import { STANDARD_RESPONSE, STORAGE } from '../constants/index.js'
+import { API_FAIL_RESPONSE, STORAGE } from '../constants/index.js'
 import { store, getStoreByKey } from '../utils/browser/storageEngine.js'
 
 const ErrorFactory = (name = 'ErrorFactory') => {
@@ -6,7 +6,7 @@ const ErrorFactory = (name = 'ErrorFactory') => {
     constructor (MESSAGE, OPTIONS = { callback: {} }) {
       super(MESSAGE)
       this.name = name
-      this.response = JSON.parse(JSON.stringify(STANDARD_RESPONSE))
+      this.response = JSON.parse(JSON.stringify(API_FAIL_RESPONSE))
 
       return this.reporter(MESSAGE, OPTIONS)
     }
@@ -18,7 +18,8 @@ const ErrorFactory = (name = 'ErrorFactory') => {
         ? `${this.name}:\n${message}\n${options?.origin ?? ''}`
         : this.stack
       this.response.origin = options?.origin ?? ''
-      this.response.id = new Date().getTime()
+      this.response.timestamp = new Date().getTime()
+      this.response.id = globalThis.crypto.randomUUID()
       this.response.callback = options?.callback
 
       try {

@@ -7,7 +7,7 @@ export const STORAGE = {
 
 export const STANDARD_RESPONSE = {
   message: '',
-  date: new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(new Date())
+  timestamp: new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'long' }).format(new Date())
 }
 
 export const API_RESPONSE = {
@@ -24,7 +24,8 @@ export const API_FAIL_RESPONSE = {
   ...STANDARD_RESPONSE,
   status: 'fail',
   type: '',
-  origin: ''
+  origin: '',
+  id: ''
 }
 
 export const API_OK_RESPONSE = {
