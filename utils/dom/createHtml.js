@@ -1,4 +1,4 @@
-export default function html (tagName, props = {}, children = []) {
+export function html (tagName, props = {}, children = []) {
   const newElm = Object.assign(document.createElement(tagName), props)
 
   if (Array.isArray(children)) {
