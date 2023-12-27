@@ -5,7 +5,7 @@ import { _renderImages } from './_renderImages'
 const IParamsDefault = {
   gallery: undefined,
   option: {
-    emitImageSelected: () => {}
+    emitter: () => ({ src: '' })
   }
 }
 
@@ -22,9 +22,11 @@ export async function galleryService ({ gallery, option } = IParamsDefault) {
     })
   }
 
-  gallery.addEventListener('click', ({ target }) => {
-    if (target instanceof globalThis.HTMLImageElement) {
-      option.emitImageSelected({ src: target.src })
+  gallery.addEventListener('click', (event) => {
+    if (event.target instanceof globalThis.HTMLImageElement && option?.emitter) {
+      option.emitter({ src: event.target.src })
+    } else {
+      event.preventDefault()
     }
   })
 
@@ -32,6 +34,7 @@ export async function galleryService ({ gallery, option } = IParamsDefault) {
     props: {
       className: 'group rounded-lg overflow-hidden cursor-zoom-in'
     },
-    getOuterHTML: true
+    getOuterHTML: true,
+    origin: 'galleryService'
   })
 }

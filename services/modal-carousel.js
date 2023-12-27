@@ -10,8 +10,8 @@ export async function modalCarousel ({ dialog }) {
     throw new HTMLError('Dialog is not defined', {
       origin: 'modalCarousel',
       callback: {
-        getImagesFromGallery: () => {},
-        initCarousel: () => {}
+        getImages: () => {},
+        useCarousel: () => {}
       }
     })
   }
@@ -30,7 +30,7 @@ export async function modalCarousel ({ dialog }) {
     props: {
       className: 'group rounded-lg overflow-hidden cursor-zoom-in shrink-0 delay-75 transition-transform w-full px-1'
     },
-    error: { origin: 'modalCarousel' }
+    origin: 'modalCarousel'
   })
 
   const $dialogCarouselAnchors = $dialogNav.querySelectorAll('nav a')
@@ -62,7 +62,7 @@ export async function modalCarousel ({ dialog }) {
 
       if (anchor) {
         !wasClicked && dialogMiniCarrousel({ position: _HASH })
-        getImagesFromGallery({ src: anchor.firstChild?.src || '' /** TODO: use a default image */ })
+        getImages({ src: anchor.firstChild?.src || '' /** TODO: use a default image */ })
       }
     } else if (isNaN(hash) && dialog && dialog.open) {
       dialog.close()
@@ -80,17 +80,17 @@ export async function modalCarousel ({ dialog }) {
     })
   }
 
-  function getImagesFromGallery ({ src }) {
+  function getImages ({ src }) {
     $dialogImg?.setAttribute('src', src)
     !dialog?.open && dialog.showModal()
   }
 
-  function initCarousel () {
+  function useCarousel () {
     _handlerModalCarousel()
   }
 
   return Promise.resolve({
-    getImagesFromGallery,
-    initCarousel
+    getImages,
+    useCarousel
   })
 }
