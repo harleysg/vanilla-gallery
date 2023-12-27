@@ -1,4 +1,4 @@
-import { HTMLError } from '../helpers/errors.js'
+import { ContextError, HTMLError } from '../helpers/errors.js'
 import { html } from '../utils/dom/index.js'
 import { HTMLValidator } from '../schema/html.js'
 import { ImageController } from '../controller/index.js'
@@ -6,25 +6,33 @@ import { ImageController } from '../controller/index.js'
 const defaultOptions = {
   props: {},
   getOuterHTML: false,
-  error: { origin: '' }
+  origin: ''
 }
 
 export async function _renderImages (
-  target, { props, getOuterHTML, error } = defaultOptions
+  target, { props, getOuterHTML, origin } = defaultOptions
 ) {
+  let tmplImage = ''
   const isHTML = await HTMLValidator(target)
 
   if (isHTML.error) {
     throw new HTMLError(isHTML.error.format()._errors[0], {
-      origin: `renderImages <- ${error?.origin ?? ''}`
+      origin: `renderImages <- ${origin}`
     })
   }
 
   const data = await ImageController.getAll()
-  let tmplImage = ''
-  target.toggleAttribute('data-loading')
 
-  if (data.length === 0) return
+  if (data.length === 0) {
+    const error = await new ContextError('Image data is 0', {
+      callback: [],
+      origin: `_renderImages <- ${origin}`
+    })
+
+    throw error
+  }
+
+  target.toggleAttribute('data-loading')
 
   data.forEach((image, index) => {
     if (image.src) {

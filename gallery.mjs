@@ -1,18 +1,40 @@
 import { modalCarousel } from './services/modal-carousel.js'
 import { galleryService } from './services/gallery.service.js'
+import { HTMLValidator } from './schema/html.js'
+import { HTMLError } from './helpers/errors.js'
 
 export async function vanillaGallery ({ gallery, dialog }) {
-  const modalCarouselRef = await modalCarousel({ dialog }).catch(async error => {
-    const val = await error
-    return val?.callback
-  })
+  const isGallery = await HTMLValidator(gallery)
+  const isDialog = await HTMLValidator(dialog, globalThis.HTMLDialogElement)
 
-  modalCarouselRef.initCarousel()
+  if (isGallery.error) {
+    throw new HTMLError('Gallery not valid', {
+      callback: {}
+    })
+  }
+
+  if (isDialog.error) {
+    const error = await new HTMLError('Dialog is not defined', {
+      origin: 'modalCarousel'
+    })
+
+    await galleryService({
+      gallery
+    })
+
+    throw error
+  }
+
+  const modalCarouselRef = await modalCarousel({ dialog })
 
   await galleryService({
     gallery,
     option: {
-      emitImageSelected: modalCarouselRef.getImagesFromGallery
+      emitter: ({ src }) => {
+        modalCarouselRef?.getImages({ src })
+      }
     }
   })
+
+  modalCarouselRef.useCarousel()
 }
